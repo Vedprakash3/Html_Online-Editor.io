@@ -52,16 +52,20 @@ button{
     cursor:pointer;
 }
 
-.run-btn{
-    background:#007bff;
+button:active{
+    transform:scale(0.98);
 }
 
 .dark-btn{
     background:#222;
 }
 
-button:active{
-    transform:scale(0.98);
+.run-btn{
+    background:#007bff;
+}
+
+.download-btn{
+    background:#28a745;
 }
 
 .preview-box{
@@ -126,7 +130,11 @@ body.dark h2{
     <textarea id="code" placeholder="Yahan HTML code paste karo..."></textarea>
 
     <button class="run-btn" onclick="runCode()">
-        Run Code
+        ▶ Run Code
+    </button>
+
+    <button class="download-btn" onclick="downloadHTML()">
+        ⬇ Download HTML
     </button>
 
     <div class="preview-box">
@@ -148,9 +156,37 @@ editor.addEventListener("input", () => {
     localStorage.setItem("htmlCode", editor.value);
 });
 
-/* Run HTML */
+/* Run Code */
 function runCode(){
     output.srcdoc = editor.value;
+}
+
+/* Download HTML File */
+function downloadHTML(){
+
+    const code = editor.value;
+
+    if(code.trim() === ""){
+        alert("Pehle HTML code likho.");
+        return;
+    }
+
+    const blob = new Blob(
+        [code],
+        { type: "text/html" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "index.html";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
 }
 
 /* Load Theme */
@@ -168,6 +204,11 @@ function toggleDarkMode(){
     }else{
         localStorage.setItem("theme","light");
     }
+}
+
+/* Auto Run Last Saved Code On Reload */
+if(editor.value.trim() !== ""){
+    output.srcdoc = editor.value;
 }
 
 </script>
