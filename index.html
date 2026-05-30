@@ -16,6 +16,7 @@
 body{
     background:#f5f5f5;
     padding:15px;
+    transition:0.3s;
 }
 
 .container{
@@ -37,6 +38,7 @@ textarea{
     resize:vertical;
     font-size:15px;
     outline:none;
+    transition:0.3s;
 }
 
 button{
@@ -45,10 +47,17 @@ button{
     padding:14px;
     border:none;
     border-radius:8px;
-    background:#007bff;
     color:white;
     font-size:16px;
     cursor:pointer;
+}
+
+.run-btn{
+    background:#007bff;
+}
+
+.dark-btn{
+    background:#222;
 }
 
 button:active{
@@ -68,6 +77,7 @@ iframe{
 }
 
 @media (max-width:600px){
+
     textarea{
         height:200px;
     }
@@ -80,6 +90,27 @@ iframe{
         font-size:15px;
     }
 }
+
+/* Dark Mode */
+
+body.dark{
+    background:#121212;
+    color:white;
+}
+
+body.dark textarea{
+    background:#1e1e1e;
+    color:white;
+    border:1px solid #444;
+}
+
+body.dark iframe{
+    border:1px solid #444;
+}
+
+body.dark h2{
+    color:white;
+}
 </style>
 </head>
 <body>
@@ -88,9 +119,15 @@ iframe{
 
     <h2>HTML Online Editor</h2>
 
+    <button class="dark-btn" onclick="toggleDarkMode()">
+        🌙 Toggle Dark Mode
+    </button>
+
     <textarea id="code" placeholder="Yahan HTML code paste karo..."></textarea>
 
-    <button onclick="runCode()">Run Code</button>
+    <button class="run-btn" onclick="runCode()">
+        Run Code
+    </button>
 
     <div class="preview-box">
         <iframe id="output"></iframe>
@@ -99,10 +136,40 @@ iframe{
 </div>
 
 <script>
+
+const editor = document.getElementById("code");
+const output = document.getElementById("output");
+
+/* Load Saved Code */
+editor.value = localStorage.getItem("htmlCode") || "";
+
+/* Auto Save Code */
+editor.addEventListener("input", () => {
+    localStorage.setItem("htmlCode", editor.value);
+});
+
+/* Run HTML */
 function runCode(){
-    const code = document.getElementById("code").value;
-    document.getElementById("output").srcdoc = code;
+    output.srcdoc = editor.value;
 }
+
+/* Load Theme */
+if(localStorage.getItem("theme") === "dark"){
+    document.body.classList.add("dark");
+}
+
+/* Toggle Dark Mode */
+function toggleDarkMode(){
+
+    document.body.classList.toggle("dark");
+
+    if(document.body.classList.contains("dark")){
+        localStorage.setItem("theme","dark");
+    }else{
+        localStorage.setItem("theme","light");
+    }
+}
+
 </script>
 
 </body>
